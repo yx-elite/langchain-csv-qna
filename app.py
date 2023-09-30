@@ -2,6 +2,7 @@ import streamlit as st
 from dotenv import load_dotenv
 from langchain.agents import create_csv_agent
 from langchain.llms import OpenAI
+from langchain.callbacks import get_openai_callback
 
 
 def main():
@@ -22,7 +23,10 @@ def main():
             
             try:
                 with st.spinner("Generating answer..."):
-                    response = agent.run(user_prompt)
+                    with get_openai_callback() as cb:
+                        response = agent.run(user_prompt)
+                        print(cb)
+                        
                 st.success("Answer is generated successfully")
             
             except Exception as e:
